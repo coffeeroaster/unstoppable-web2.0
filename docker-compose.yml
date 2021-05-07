@@ -1,14 +1,13 @@
----
-version: "2.0"
-
+version: '2.1'
 services:
   pg-0:
-    image: docker.io/bitnami/postgresql-repmgr:11 
-    expose:
-      - port: 5432
-        to:
-          - service: pg-1, pgpool
-    env:
+    build:
+      context: pg-0
+    ports:
+      - 5432
+    volumes:
+      - ./dbout.zip:/tmp/dbout.zip
+    environment:
       - BACKUP_SKYNET_URL=https://siasky.net/AABntGRUfXKMG-aP2caot_k-Ud3E9UJAUZdeMuj-0k97iQ
       - BACKUP_PASS=custompassword
       - POSTGRESQL_POSTGRES_PASSWORD=adminpassword
@@ -21,13 +20,10 @@ services:
       - REPMGR_PARTNER_NODES=pg-0,pg-1
       - REPMGR_NODE_NAME=pg-0
       - REPMGR_NODE_NETWORK_NAME=pg-0
-
   pg-1:
     image: docker.io/bitnami/postgresql-repmgr:11
     ports:
       - 5432
-        to:
-          - service: pg-1, pgpool
     environment:
       - POSTGRESQL_POSTGRES_PASSWORD=adminpassword
       - POSTGRESQL_USERNAME=customuser
@@ -39,13 +35,10 @@ services:
       - REPMGR_PARTNER_NODES=pg-0,pg-1
       - REPMGR_NODE_NAME=pg-1
       - REPMGR_NODE_NETWORK_NAME=pg-1
-
   pgpool:
     image: docker.io/bitnami/pgpool:4
     ports:
-      - 5432
-        to:
-          - service: web
+      - 5432:5432
     depends_on:
       - pg-0
       - pg-1
@@ -65,85 +58,13 @@ services:
       timeout: 5s
       retries: 5
 
-
   web:
     image: bcfus/unstoppable-stack-poc:latest
-    depends-on: postgres
-    expose:
-      - port: 80
-        as: 80
-        accept: 
-          - unstoppablestack.com
-        to:
-          - global: true
-    env:
+    depends_on: 
+      - pgpool
+    ports:
+      - "80:80"
+    environment:
       - PYTHONPATH=.
       - DATABASE_URL=postgresql://customuser:custompassword@pgpool:5432/customdatabase
 
-profiles:
-  compute:
-    web:
-      resources:
-        cpu:
-          units: 0.1
-        memory:
-          size: 512Mi
-        storage:
-          size: 512Mi
-    pg-0:
-      resources:
-        cpu:
-          units: 1 
-        memory:
-          size: 1Gi
-        storage:
-          size: 1Gi
-    pg-1:
-      resources:
-        cpu:
-          units: 1 
-        memory:
-          size: 1Gi
-        storage:
-          size: 1Gi
-    ppgpool:
-      resources:
-        cpu:
-          units: 1 
-        memory:
-          size: 1Gi
-        storage:
-          size: 1Gi
-  placement:
-    dcloud:
-      attributes:
-        host: akash
-      signedBy:
-        anyOf:
-          - "akash1365yvmc4s7awdyj3n2sav7xfx76adc6dnmlx63"
-      pricing:
-        web: 
-          denom: uakt
-          amount: 1000
-        postgres: 
-          denom: uakt
-          amount: 3000
-
-deployment:
-  pg-0:
-    dcloud:
-      profile: pg-0
-      count: 1
-  pg-1:
-    dcloud:
-      profile: pg-1
-      count: 1
-  pgpool:
-    dcloud:
-      profile: pgpool
-      count: 1
-  web:
-    dcloud:
-      profile: web
-      count: 1
-  

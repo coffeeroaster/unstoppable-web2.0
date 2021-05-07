@@ -4,6 +4,73 @@ This repository serves as a general guide and proof of concept for **deploying a
 
 The repository is structured as a **monorepo** - with **infrastructure configuration**, **application frontend code**, and **application backend code** all in one repository. This is done so that anyone can clone or fork this one repository and begin to experiment with deploying a decentralized web application.
 
+## Redundant Postgresql infrastucture
+
+Based off the [ Bitname pgpool project] (https://github.com/bitnami/bitnami-docker-pgpool/), this approach sets up three containers. **pg-0** as a postgresql master, **pg-0** as a postgresql secondary  ( running as a hot standby) and **pg-pool** will determine which postgres container to connect to.
+
+
+### Running the container
+
+
+```
+# run the backend
+$docker-compose up -d
+# run the front end
+$ cd application/frontend/ && npm start
+# Connect to the browser at http://localhost:3000
+```
+
+### Shut down **pg-0** container
+```
+$ docker-compose stop pg-0
+## verify that things are working as planned
+# Connect to the browser at http://localhost:3000
+# Should see all data still there. Try adding values
+```
+
+### Backup your data to Skynet 
+
+#### do a database backup
+```
+$docker-compose run pgpool pg_dump -h pg-0 -p 5432 -U customuser -W  -d customdbatabase > dbout.sql
+# encrypt it
+# Find and incredibly strong password. Let's use "custompassword"
+$ zip --encrypt dbout.zip 
+```
+Make sure to update the **`$BACKUP_PASS`** env variable in docker-compose.yml, akash/deploy-sample.yml
+
+#### backup to Skynet
+
+Upload the backup to Skynet and store URL as **BACKUP_SKYNET_URL**
+```
+$ npm install -g skynet-cli
+## send it to skynet!
+$ skynet-cli dbout.zip
+## Take special note of the URL!
+```
+#### Tell Unstoppable Stack to load it up next time.
+update docker-compose.yml , akash/deploy-sample.yml. You can see an example in the provided 
+
+
+#### Shutdown and destroy your entire deployment
+``` 
+$docker-compose down -v 
+```
+#### Start it back up
+``` 
+$docker-compose up -d
+# run the front end
+$ cd application/frontend/ && npm start
+# Connect to the browser at http://localhost:3000
+```
+You should now have the database that you backed up. 
+
+
+## Database replication next steps
+
+* Need a more secure way of encrypting backups. This is an example. It should be made better.
+* There are no automated backups in this solution. In future, adding a cron job that regularly makes backups and notifies you of the latest version would be best.
+
 
 ## Decentralized infrastructure
 

@@ -129,7 +129,6 @@ dmypy.json
 .pyre/
 
 # Docker
-docker-compose.yml
 
 # React, Node
 node_modules/
