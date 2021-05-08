@@ -33,7 +33,11 @@ $ docker-compose stop pg-0
 #### do a database backup
 To retreive a live encrypted backup of the data, you can run the following command against the API:
 ```
+# For testing locally with docker-compose
 curl -v http://localhost/getsnapshot > dbout.zip
+# For testing against AKASH deployment
+# Obtain AKASH HOST and PORT
+curl -v http://$AKASHHOST/getsnapshot:$ASASHPORT > dbout.zip
 ```
 Make sure to update the **`$BACKUP_PASS`** env variable in docker-compose.yml, akash/deploy-sample.yml. You will use the password to decrypt the zip file.
 
