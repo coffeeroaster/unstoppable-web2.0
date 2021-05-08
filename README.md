@@ -46,11 +46,10 @@ Upload the backup to Skynet and store URL as **BACKUP_SKYNET_URL**
 $ npm install -g skynet-cli
 ## send it to skynet!
 $ skynet-cli dbout.zip
-## Take special note of the URL!
+## Take special note of the URL. This value will be used as **BACKUP_SKYNET_URL**
 ```
 #### Tell Unstoppable Stack to load it up next time.
-update docker-compose.yml , akash/deploy-sample.yml. You can see an example in the provided 
-
+update docker-compose.yml and akash/deploy-sample.yml environment variables section and update **BACKUP_SKYNET_URL** with the value from the previous step.
 
 #### Shutdown and destroy your entire deployment
 ``` 
@@ -63,8 +62,19 @@ $docker-compose up -d
 $ cd application/frontend/ && npm start
 # Connect to the browser at http://localhost:3000
 ```
-You should now have the database that you backed up. 
+You should now see the values from the database that you backed up.
 
+### More detail -- how does this work?
+
+* The postgres Docker image will execute any .sh, load and .sql, .sql.gz file in /docker-entrypoint-initdb.d
+* The custom docker image creates a shell script called (0.sh) -- you can review it in `pg-0/dbout.sh`
+* `0.sh` will reads in the following env vars: `BACKUP_SYKNET_URL` and `BACKUP_PASS`. It retrieves the encrypted zip file from Skynet and decrpyts it with `BACKUP_PASS`. Finally the sql script is loaded into the DB.
+* `pg-0` or the postgres master starts up.
+* `pg-1` or the postgres standby starts up.
+* `pgpool` container starts up.
+* `web` container starts up and attempts to connect to pgpool.
+* If pg-1 or pg-0 goes down, web will automatically be re-routed to the other one.
+* If the entire cluster goes down, the cluster can be started again from the initial database stored in Skynet.
 
 ## Database replication next steps
 
