@@ -6,7 +6,7 @@ The repository is structured as a **monorepo** - with **infrastructure configura
 
 ## Redundant Postgresql infrastucture
 
-Based off the [ Bitname pgpool project] (https://github.com/bitnami/bitnami-docker-pgpool/), this approach sets up three containers. **pg-0** as a postgresql master, **pg-0** as a postgresql secondary  ( running as a hot standby) and **pg-pool** will determine which postgres container to connect to.
+Based off the [Bitname pgpool project](https://github.com/bitnami/bitnami-docker-pgpool/), this approach sets up three containers. **pg-0** as a postgresql master, **pg-0** as a postgresql secondary  ( running as a hot standby) and **pg-pool** will determine which postgres container to connect to.
 
 
 ### Running the container
@@ -41,7 +41,8 @@ Make sure to update the **`$BACKUP_PASS`** env variable in docker-compose.yml, a
 
 #### backup to Skynet
 
-Upload the backup to Skynet and store URL as **BACKUP_SKYNET_URL**
+
+Upload the backup to Skynet with [skynet-cli](https://github.com/vbstreetz/skynet-cli) and store URL as **BACKUP_SKYNET_URL**
 ```
 $ npm install -g skynet-cli
 ## send it to skynet!
