@@ -82,7 +82,6 @@ You should now see the values from the database that you backed up.
 ## Database replication next steps
 
 * Need a more secure way of encrypting backups. This is an example. It should be made better.
-* There are no automated backups in this solution. In future, adding a cron job that regularly makes backups and notifies you of the latest version would be best.
 
 ## Decentralized infrastructure
 
