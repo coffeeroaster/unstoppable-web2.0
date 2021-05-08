@@ -31,16 +31,13 @@ $ docker-compose stop pg-0
 ### Backup your data to Skynet 
 
 #### do a database backup
+To retreive a live encrypted backup of the data, you can run the following command against the API:
 ```
-$docker-compose run pgpool pg_dump -h pg-0 -p 5432 -U customuser -W  -d customdbatabase > dbout.sql
-# encrypt it
-# Find and incredibly strong password. Let's use "custompassword"
-$ zip --encrypt dbout.zip 
+curl -v http://localhost/getsnapshot > dbout.zip
 ```
-Make sure to update the **`$BACKUP_PASS`** env variable in docker-compose.yml, akash/deploy-sample.yml
+Make sure to update the **`$BACKUP_PASS`** env variable in docker-compose.yml, akash/deploy-sample.yml. You will use the password to decrypt the zip file.
 
 #### backup to Skynet
-
 
 Upload the backup to Skynet with [skynet-cli](https://github.com/vbstreetz/skynet-cli) and store URL as **BACKUP_SKYNET_URL**
 ```
