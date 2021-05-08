@@ -6,7 +6,7 @@ The repository is structured as a **monorepo** - with **infrastructure configura
 
 ## Redundant Postgresql infrastucture
 
-Based off the [Bitname pgpool project](https://github.com/bitnami/bitnami-docker-pgpool/), this approach sets up three containers. **pg-0** as a postgresql master, **pg-0** as a postgresql secondary  ( running as a hot standby) and **pg-pool** will determine which postgres container to connect to.
+Based off the [Bitnami pgpool project](https://github.com/bitnami/bitnami-docker-pgpool/), this approach sets up three containers. **pg-0** as a postgresql master, **pg-0** as a postgresql secondary  ( running as a hot standby) and **pg-pool** will determine which postgres container to connect to.
 
 
 ### Running the container
