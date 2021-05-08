@@ -16,7 +16,7 @@ Based off the [ Bitname pgpool project] (https://github.com/bitnami/bitnami-dock
 # run the backend
 $docker-compose up -d
 # run the front end
-$ cd application/frontend/ && npm start
+$ cd application/frontend/ && npm install && npm start
 # Connect to the browser at http://localhost:3000
 ```
 
@@ -70,7 +70,6 @@ You should now have the database that you backed up.
 
 * Need a more secure way of encrypting backups. This is an example. It should be made better.
 * There are no automated backups in this solution. In future, adding a cron job that regularly makes backups and notifies you of the latest version would be best.
-
 
 ## Decentralized infrastructure
 

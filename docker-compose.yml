@@ -5,8 +5,6 @@ services:
       context: pg-0
     ports:
       - 5432
-    volumes:
-      - ./dbout.zip:/tmp/dbout.zip
     environment:
       - BACKUP_SKYNET_URL=https://siasky.net/AABntGRUfXKMG-aP2caot_k-Ud3E9UJAUZdeMuj-0k97iQ
       - BACKUP_PASS=custompassword
