@@ -3,11 +3,7 @@ version: "2.0"
 
 services:
   pg-0:
-    image: docker.io/bitnami/postgresql-repmgr:11 
-    expose:
-      - port: 5432
-        to:
-          - service: pg-1, pgpool
+    image: user994455/postgresql-repmgr:11
     env:
       - BACKUP_SKYNET_URL=https://siasky.net/AABntGRUfXKMG-aP2caot_k-Ud3E9UJAUZdeMuj-0k97iQ
       - BACKUP_PASS=custompassword
@@ -21,14 +17,15 @@ services:
       - REPMGR_PARTNER_NODES=pg-0,pg-1
       - REPMGR_NODE_NAME=pg-0
       - REPMGR_NODE_NETWORK_NAME=pg-0
+    expose:
+      - port: 5432
+        proto: tcp
+        to:
+          - service: pgpool
 
   pg-1:
     image: docker.io/bitnami/postgresql-repmgr:11
-    ports:
-      - 5432
-        to:
-          - service: pg-1, pgpool
-    environment:
+    env:
       - POSTGRESQL_POSTGRES_PASSWORD=adminpassword
       - POSTGRESQL_USERNAME=customuser
       - POSTGRESQL_PASSWORD=custompassword
@@ -39,17 +36,15 @@ services:
       - REPMGR_PARTNER_NODES=pg-0,pg-1
       - REPMGR_NODE_NAME=pg-1
       - REPMGR_NODE_NETWORK_NAME=pg-1
+    expose:
+      - port: 5432
+        proto: tcp
+        to:
+          - service: pg-1
 
   pgpool:
     image: docker.io/bitnami/pgpool:4
-    ports:
-      - 5432
-        to:
-          - service: web
-    depends_on:
-      - pg-0
-      - pg-1
-    environment:
+    env:
       - PGPOOL_BACKEND_NODES=0:pg-0:5432,1:pg-1:5432
       - PGPOOL_SR_CHECK_USER=customuser
       - PGPOOL_SR_CHECK_PASSWORD=custompassword
@@ -59,26 +54,31 @@ services:
       - PGPOOL_ADMIN_USERNAME=admin
       - PGPOOL_ADMIN_PASSWORD=adminpassword
       - PGPOOL_ENABLE_LOAD_BALANCING=yes
-    healthcheck:
-      test: ["CMD", "/opt/bitnami/scripts/pgpool/healthcheck.sh"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
+    depends-on:
+      - service: pg-0
+      - service: pg-1
+    expose:
+      - port: 5432
+        proto: tcp
+        to:
+          - service: web
 
   web:
-    image: bcfus/unstoppable-stack-poc:latest
-    depends-on: postgres
+    image: user994455/unstoppable-stack-poc:latest
+    env:
+      - PYTHONPATH=.
+      - BACKUP_PASS=custompassword
+      - POSTGRESQL_USERNAME=customuser
+      - POSTGRESQL_PASSWORD=custompassword
+      - POSTGRESQL_DATABASE=customdatabase
+      - DATABASE_URL=postgresql://customuser:custompassword@pgpool:5432/customdatabase
+    depends-on:
+      - service: pgpool
     expose:
       - port: 80
         as: 80
-        accept: 
-          - unstoppablestack.com
         to:
           - global: true
-    env:
-      - PYTHONPATH=.
-      - DATABASE_URL=postgresql://customuser:custompassword@pgpool:5432/customdatabase
 
 profiles:
   compute:
@@ -93,7 +93,7 @@ profiles:
     pg-0:
       resources:
         cpu:
-          units: 1 
+          units: 1
         memory:
           size: 1Gi
         storage:
@@ -101,31 +101,35 @@ profiles:
     pg-1:
       resources:
         cpu:
-          units: 1 
+          units: 1
         memory:
           size: 1Gi
         storage:
           size: 1Gi
-    ppgpool:
+    pgpool:
       resources:
         cpu:
-          units: 1 
+          units: 1
         memory:
           size: 1Gi
         storage:
           size: 1Gi
   placement:
     dcloud:
-      attributes:
-        host: akash
       signedBy:
         anyOf:
           - "akash1365yvmc4s7awdyj3n2sav7xfx76adc6dnmlx63"
       pricing:
-        web: 
+        pg-0:
           denom: uakt
-          amount: 1000
-        postgres: 
+          amount: 6000
+        pg-1:
+          denom: uakt
+          amount: 6000
+        pgpool:
+          denom: uakt
+          amount: 6000
+        web:
           denom: uakt
           amount: 3000
 
@@ -146,4 +150,3 @@ deployment:
     dcloud:
       profile: web
       count: 1
-  
