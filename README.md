@@ -160,7 +160,7 @@ $ docker-compose stop pg-0
 ```
 
 
-## Step 7 - Setup database backups
+## Step 8 - Setup database backups
 
 ### Backup your data locally  
 
@@ -210,14 +210,13 @@ You should now see the values from the database that you backed up.
 #### Start it back up (production env)
 
 * Update [akash/deploy-sample.yml](akash/deploy-sample.yml) with updated ENV variables (namely the **BACKUP_SKYNET_URL** )
-* Redeploy to Akash following the `step 3` in this guide.
-* Front END URL  
+* Redeploy backend to Akash following the `step 3` in this guide.
+* If using Handshake (Step 5) Use the same Front END URL. 
 
 ## Database replication next steps
 
 * Investigate [NuCypher](https://nucypher.com) for better key management
-* Look into [SkyNet registry](https://siasky.net/docs/?javascript--node#setting-data-on-the-registry) for a simpler way to provide backup / restoration. Right now, each provision to Akash requires updating the 
-
+* Look into [SkyNet registry](https://siasky.net/docs/?javascript--node#setting-data-on-the-registry) for a simpler way to provide backup / restoration. Right now, each provision to Akash requires updating a new SkyLink URI. Using a Skylink Registry will allow the container to use a consistent `skyns URL` to retrieve the latest backup for ease of use.
 
 ---
 
