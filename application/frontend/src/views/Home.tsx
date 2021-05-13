@@ -82,7 +82,7 @@ export const Home: FC = () => {
         <Grid item sm={10}>
           <Divider className={classes.divider} variant="middle"/>
           <p>
-            This <b>React</b> component is backed by a Python <b>FastAPI</b> application and a <b>PostgreSQL</b> database, both running on <b>Akash</b>.
+            This <b>React</b> component is backed by a Python <b>FastAPI</b> application and a fully redundant <b>PostgreSQL</b> database, both running on <b>Akash</b>. This setup is capabably of regular backups to <b>Skynet</b>. See the guide below for more details.
           </p>
         </Grid>
 
@@ -92,7 +92,12 @@ export const Home: FC = () => {
 
         <Grid item sm={10}>
           <Divider className={classes.divider} variant="middle"/>
-          Step-by-step guide on how this application was built and deployed <a className={classes.link} href="https://github.com/bcfus/unstoppable-stack">https://github.com/bcfus/unstoppable-stack</a>.
+          Step-by-step guide on how this application was built and deployed <a className={classes.link} href="https://github.com/coffeeroaster/unstoppable-web2.0">https://github.com/coffeeroaster/unstoppable-web2.0</a>.
+        </Grid>
+
+        <Grid item sm={10}>
+          <Divider className={classes.divider} variant="middle"/>
+          Original Step-by-step guide : <a className={classes.link} href="https://github.com/bcfus/unstoppable-stack">https://github.com/bcfus/unstoppable-stack</a>.
         </Grid>
       </Grid>
     </Box>
