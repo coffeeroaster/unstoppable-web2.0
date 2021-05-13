@@ -30,7 +30,7 @@ A deployed **live demo** demo was deployed using the steps in this guide. Link b
 
 | Frontend URL |  Backend URL|
 | :--: | :--: |
-| **[skynet URL/](https://0000ac8v9uf92otn28omnuqfan0qd05f3gjrsfoonjpjl3m3ir7qds8.siasky.net/#)** | [https://unstoppablestack.coffeeroaster.me/](https://unstoppablestack.coffeeroaster.me/)
+| **[skynet URL](https://0000ac8v9uf92otn28omnuqfan0qd05f3gjrsfoonjpjl3m3ir7qds8.siasky.net/#)** | [https://unstoppablestack.coffeeroaster.me/](https://unstoppablestack.coffeeroaster.me/)
 
 
 ![](guide/images/demo.png)
